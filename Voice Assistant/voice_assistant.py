@@ -5,6 +5,7 @@ import datetime
 import wikipedia
 import pyjokes
 import webbrowser
+from googlesearch import search
 
 # Initialize the recognizer
 listener = sr.Recognizer()
@@ -37,12 +38,12 @@ def take_command():
             command = listener.recognize_google(voice)
             command = command.lower()
 
-            if 'alexa' in command:
-                command = command.replace('alexa', '')
+            if 'hey luna' in command or 'ok luna' in command or 'luna' in command:
+                command = command.replace('luna', '')
                 talk(command)
         return command
 
-def run_alexa():
+def run_luna():
     """
     Process the command and execute corresponding actions.
     """
@@ -50,7 +51,7 @@ def run_alexa():
     print(command)
 
     # Play a song or open a YouTube video
-    if 'play' in command or 'youtube' in command:
+    if 'play' in command:
         song = command.replace('play','').replace('youtube','')
         talk(f'Playing {song} in Youtube')
         pywhatkit.playonyt(song)
@@ -68,7 +69,7 @@ def run_alexa():
         talk(f'Today is {date}')
         
     # Provide information about a person from Wikipedia
-    elif 'who is' in command or 'info' in command:
+    elif 'who is' in command or 'wikipedia' in command:
         person = command.replace('wikipedia','')
         info = wikipedia.summary(person, 1)
         print(info)
@@ -84,11 +85,23 @@ def run_alexa():
         talk("Opening Youtube\n")
         webbrowser.open("youtube.com")
 
-    # Tell a joke
+    # Perform a Google Search 
+    elif 'what is' in command or 'google' in command:
+        link = command.replace('what is', '').replace('google','')
+        talk("Here are some results\n")
+        results = search(link, num_results=3)
+        for result in results:
+            print(result)
+
+    # Tell a Joke
     elif 'joke' in command:
         jokes = talk(pyjokes.get_joke())
         print(jokes)
         talk(jokes)
+
+    #Respond to Thank you 
+    elif 'thank you' in command:
+        talk("I am glad that I could help you.")
 
     # Handle unrecognized commands
     else:
@@ -96,4 +109,4 @@ def run_alexa():
 
 # Continuously run the voice assistant
 while True:
-    run_alexa()
+    run_luna()
